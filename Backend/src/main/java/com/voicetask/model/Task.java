@@ -26,6 +26,10 @@ public class Task {
 
     private LocalDate deadline;
 
+    @ManyToOne
+    @JoinColumn(name = "assigned_to_id")
+    private User assignedTo;
+
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -35,7 +39,7 @@ public class Task {
     }
 
     public enum Status {
-        PENDING, IN_PROGRESS, COMPLETED
+        PENDING, IN_PROGRESS, COMPLETED, PENDING_APPROVAL, REJECTED
     }
 
     // --- Constructors ---
@@ -107,5 +111,13 @@ public class Task {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public User getAssignedTo() {
+        return assignedTo;
+    }
+
+    public void setAssignedTo(User assignedTo) {
+        this.assignedTo = assignedTo;
     }
 }

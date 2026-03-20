@@ -4,6 +4,7 @@ import com.voicetask.model.Task;
 import com.voicetask.service.TaskService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,11 +24,13 @@ public class TaskController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('MANAGER') or hasRole('EMPLOYEE')")
     public Task createTask(@Valid @RequestBody Task task) {
         return taskService.createTask(task);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('MANAGER') or hasRole('EMPLOYEE')")
     public ResponseEntity<Task> updateTask(@PathVariable Long id, @Valid @RequestBody Task taskDetails) {
         try {
             return ResponseEntity.ok(taskService.updateTask(id, taskDetails));
@@ -37,6 +40,7 @@ public class TaskController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
         taskService.deleteTask(id);
         return ResponseEntity.noContent().build();
@@ -52,12 +56,35 @@ public class TaskController {
         }
     }
 
+    @PatchMapping("/{id}/assign")
+    @PreAuthorize("hasRole('MANAGER')")
+    public ResponseEntity<Task> assignTask(@PathVariable Long id, @RequestBody Map<String, Long> payload) {
+        try {
+            return ResponseEntity.ok(taskService.assignTask(id, payload.get("userId")));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PatchMapping("/{id}/approve")
+    @PreAuthorize("hasRole('MANAGER')")
+    public ResponseEntity<Task> approveTask(@PathVariable Long id) {
+        return ResponseEntity.ok(taskService.approveTask(id));
+    }
+
+    @PatchMapping("/{id}/reject")
+    @PreAuthorize("hasRole('MANAGER')")
+    public ResponseEntity<Task> rejectTask(@PathVariable Long id) {
+        return ResponseEntity.ok(taskService.rejectTask(id));
+    }
+
     @GetMapping("/search")
     public List<Task> searchTasks(@RequestParam String keyword) {
         return taskService.searchTasks(keyword);
     }
 
     @PostMapping("/voice-command")
+    @PreAuthorize("hasRole('MANAGER') or hasRole('EMPLOYEE')")
     public ResponseEntity<Task> voiceCommand(@RequestBody Map<String, String> payload) {
         try {
             return ResponseEntity.ok(taskService.processVoiceCommand(payload.get("command")));

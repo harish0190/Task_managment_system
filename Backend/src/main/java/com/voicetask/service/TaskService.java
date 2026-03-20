@@ -14,6 +14,9 @@ public class TaskService {
     @Autowired
     private TaskRepository taskRepository;
 
+    @Autowired
+    private com.voicetask.dao.UserRepository userRepository;
+
     public List<Task> getAllTasks() {
         return taskRepository.findAll();
     }
@@ -46,7 +49,36 @@ public class TaskService {
     public Task updateStatus(Long id, Task.Status status) {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Task not found with id " + id));
-        task.setStatus(status);
+        
+        // If an employee marks it as COMPLETED, it goes to PENDING_APPROVAL
+        if (status == Task.Status.COMPLETED) {
+            task.setStatus(Task.Status.PENDING_APPROVAL);
+        } else {
+            task.setStatus(status);
+        }
+        return taskRepository.save(task);
+    }
+
+    public Task assignTask(Long taskId, Long userId) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Task not found"));
+        com.voicetask.model.User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        task.setAssignedTo(user);
+        return taskRepository.save(task);
+    }
+
+    public Task approveTask(Long id) {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Task not found"));
+        task.setStatus(Task.Status.COMPLETED);
+        return taskRepository.save(task);
+    }
+
+    public Task rejectTask(Long id) {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Task not found"));
+        task.setStatus(Task.Status.REJECTED);
         return taskRepository.save(task);
     }
 
