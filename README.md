@@ -56,3 +56,5 @@ VoiceTask is a modern, responsive, and voice-enabled task management application
 
 ---
 *Developed by Dream coder*
+
+Create repository and README
