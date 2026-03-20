@@ -55,4 +55,4 @@ VoiceTask is a modern, responsive, and voice-enabled task management application
 -   **Manager**: Administrative user with approval and creation rights.
 
 ---
-*Developed by harish0190*
+*Developed by Dream coder*
