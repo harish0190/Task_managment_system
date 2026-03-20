@@ -15,7 +15,9 @@ VoiceTask is a modern, responsive, and voice-enabled task management application
 ## 🛠️ Tech Stack
 
 -   **Backend**: Java 17, Spring Boot, Spring Security (JWT), Spring Data JPA, MySQL.
+    - Create backend/server folder and implement requirements
 -   **Frontend**: HTML5, Vanilla CSS, Javascript (ES6+), Web Speech API.
+    - Create frontend/client folder and implement requirements
 
 ## 📋 Prerequisites
 
