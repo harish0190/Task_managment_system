@@ -5,6 +5,8 @@ import com.voicetask.model.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,8 +52,13 @@ public class TaskService {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Task not found with id " + id));
         
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        boolean isManager = auth != null && auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_MANAGER"));
+
         // If an employee marks it as COMPLETED, it goes to PENDING_APPROVAL
-        if (status == Task.Status.COMPLETED) {
+        // Managers can mark it as COMPLETED directly
+        if (status == Task.Status.COMPLETED && !isManager) {
             task.setStatus(Task.Status.PENDING_APPROVAL);
         } else {
             task.setStatus(status);

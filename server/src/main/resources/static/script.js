@@ -156,7 +156,10 @@ async function apiUpdateStatus(id, newStatus) {
         });
         if (!response.ok) throw new Error('Failed to update status');
         await fetchTasks();
-        showToast(newStatus === 'Completed' ? 'Submitted for Approval' : `Moved to ${newStatus}`, 'success');
+        const msg = (newStatus === 'Completed' && currentRole === 'ROLE_EMPLOYEE') 
+            ? 'Submitted for Approval' 
+            : `Moved to ${newStatus}`;
+        showToast(msg, 'success');
     } catch (error) {
         showToast('Error updating status', 'error');
     }
@@ -729,7 +732,7 @@ function setupEventListeners() {
         } else if (e.target.closest('.reject-task')) {
             apiApprovalAction(id, 'reject');
         } else if (e.target.closest('.status-tag')) {
-            if (currentRole !== 'ROLE_EMPLOYEE') return;
+            if (currentRole !== 'ROLE_EMPLOYEE' && currentRole !== 'ROLE_MANAGER') return;
             const statuses = ['Pending', 'In Progress', 'Completed'];
             let nextIndex = (statuses.indexOf(task.status) + 1) % statuses.length;
             apiUpdateStatus(id, statuses[nextIndex]);
