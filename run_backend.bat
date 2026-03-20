@@ -1,5 +1,5 @@
 @echo off
-cd Backend
+cd server
 echo Checking Java...
 java -version
 if %errorlevel% neq 0 (

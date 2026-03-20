@@ -22,7 +22,7 @@ try {
 }
 
 Write-Host "`n--- How to Run (Command Line) ---" -ForegroundColor Blue
-Write-Host "1. Open a terminal in the 'Backend' folder."
+Write-Host "1. Open a terminal in the 'server' folder."
 Write-Host "2. Run: 'mvn spring-boot:run'"
 Write-Host "3. Once it says 'Started BackendApplication', open 'Frontend/index.html' in your browser."
 Write-Host "-------------------------------`n"
