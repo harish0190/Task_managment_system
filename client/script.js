@@ -395,11 +395,16 @@ function renderDashboard() {
 function renderTaskList() {
     mainView.innerHTML = `
         <div class="task-filters">
-            <button class="filter-btn active" data-filter="all">All</button>
-            <button class="filter-btn" data-filter="Pending">Pending</button>
-            <button class="filter-btn" data-filter="In Progress">In Progress</button>
-            <button class="filter-btn" data-filter="Needs Approval">Needs Approval</button>
-            <button class="filter-btn" data-filter="Completed">Done</button>
+            <div class="filter-group">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="Pending">Pending</button>
+                <button class="filter-btn" data-filter="In Progress">In Progress</button>
+                <button class="filter-btn" data-filter="Needs Approval">Needs Approval</button>
+                <button class="filter-btn" data-filter="Completed">Done</button>
+            </div>
+            <div class="search-group">
+                <input type="text" id="taskSearch" placeholder="Search tasks..." class="search-input">
+            </div>
         </div>
         <div class="task-grid" id="allTasksList"></div>
     `;
@@ -706,9 +711,7 @@ function setupEventListeners() {
             if (e.target.classList.contains('filter-btn')) {
                 document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
                 e.target.classList.add('active');
-                const filter = e.target.dataset.filter;
-                const filteredTasks = filter === 'all' ? tasks : tasks.filter(t => t.status === filter);
-                renderTaskCards(filteredTasks, 'allTasksList');
+                applyFilters();
             }
             return;
         }
@@ -738,6 +741,29 @@ function setupEventListeners() {
             apiUpdateStatus(id, statuses[nextIndex]);
         }
     });
+
+    // Search event delegation
+    mainView.addEventListener('input', (e) => {
+        if (e.target.id === 'taskSearch') {
+            applyFilters();
+        }
+    });
+}
+
+function applyFilters() {
+    const filterBtn = document.querySelector('.filter-btn.active');
+    const filter = filterBtn ? filterBtn.dataset.filter : 'all';
+    const searchInput = document.getElementById('taskSearch');
+    const query = searchInput ? searchInput.value.toLowerCase() : '';
+
+    const filteredTasks = tasks.filter(t => {
+        const matchesFilter = filter === 'all' || t.status === filter;
+        const matchesSearch = t.title.toLowerCase().includes(query) || 
+                              t.description.toLowerCase().includes(query);
+        return matchesFilter && matchesSearch;
+    });
+
+    renderTaskCards(filteredTasks, 'allTasksList');
 }
 
 function saveToLocalStorage() {

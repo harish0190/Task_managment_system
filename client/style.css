@@ -699,11 +699,35 @@ input:focus, select:focus, textarea:focus {
     margin-bottom: 20px;
 }
 
-/* Filter Buttons */
+/* Filter & Search Bar */
 .task-filters {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
     gap: 12px;
     margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    display: flex;
+    gap: 8px;
+}
+
+.search-input {
+    width: 250px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    transition: all 0.2s;
+}
+
+.search-input:focus {
+    width: 300px;
+    border-color: var(--accent-primary);
 }
 
 .filter-btn {
